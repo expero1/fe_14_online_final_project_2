@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 import { PersistGate } from 'redux-persist/integration/react';
 import Basket from './pages/Basket';
@@ -12,12 +12,16 @@ import store, { persistor } from './redux/store';
 import theme from './themes/theme';
 import ProductsContent from './pages/Products';
 import About from './components/AboutUs';
+import Login from './components/Login';
+import User from './components/User';
 
 function App() {
   return (
     <Provider store={store}>
       <PersistGate loading="LDNG" persistor={persistor}>
         <ThemeProvider theme={theme}>
+          <Login />
+          <User />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Header />}>
