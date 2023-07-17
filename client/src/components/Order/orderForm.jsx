@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PatternFormat } from 'react-number-format';
 import { useFormik } from 'formik';
@@ -93,7 +93,7 @@ export default function OrderForm() {
           onSubmit={formik.handleSubmit}
           style={{
             padding: '10px 0',
-            top: '10%',
+            top: '20%',
             margin: 'auto',
             position: 'relative',
             borderRadius: 20,
@@ -176,7 +176,7 @@ export default function OrderForm() {
                       padding: '0 20px',
                       borderRadius: 50,
                     }}
-                    format="+# (###) #### ###"
+                    format="+3 (80#) #### ####"
                     allowEmptyFormatting
                     mask="_"
                     id="phone"
