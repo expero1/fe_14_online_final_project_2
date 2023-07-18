@@ -9,6 +9,7 @@ import { SquareButton } from '../../components/Buttons';
 import ArrowIcon from '../../components/Icons/arrowIcon/index';
 import Category from '../../components/Category';
 import ModalBasket from '../../components/ModalForBasket';
+import Carousel from '../../components/Carousel';
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily.primary,
@@ -27,7 +28,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const AllProductsBtn = styled(SquareButton)(({ theme }) => ({
+const AllProductsBtn = styled(SquareButton)(() => ({
   minWidth: '128px',
   minHeight: '32px',
   maxWidth: '218px',
@@ -38,22 +39,25 @@ function HomeContent() {
   /* const id = 123; */
 
   return (
-    <Container maxWidth="xxl">
+    <Container maxWidth="xxl" sx={{ padding: '0 3%' }}>
       <Category />
       <ModalBasket />
       <Container
-        maxWidth="xxl"
         sx={{
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'column',
           backgroundColor: '#FCF9F6',
         }}>
-        <SectionTitle variant="h2">Products</SectionTitle>
+        <SectionTitle variant="h2">Daily Sale</SectionTitle>
         <Box sx={{ width: '93%' }}>
-          <ProductsList />
+          <Carousel />
         </Box>
-        <Box sx={{ margin: '3% auto' }}>
+        <SectionTitle variant="h2">Products</SectionTitle>
+        <Box>
+          <ProductsList perPage={8} />
+        </Box>
+        <Box sx={{ margin: '10% auto' }}>
           <Link to="/product">
             <AllProductsBtn sx={{ alignItems: 'center' }}>
               <Typography

@@ -14,7 +14,7 @@ import {
 import {
   currentProduct,
   currentProductIsLoading,
-  allProductsInBase,
+  errorInProduct,
 } from '../../redux/selectors';
 import getImg from '../../cloudinary';
 import {
@@ -24,6 +24,7 @@ import {
   CountBoxes,
   CountInput,
   Guarantee,
+  PrevPrice,
 } from '../../themes/themeProduct';
 import ModalBasket from '../ModalForBasket';
 import PageNotFound from '../NotFoundPage';
@@ -32,10 +33,12 @@ function ProductDescription() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const isLoading = useSelector(currentProductIsLoading);
+  const isError = useSelector(errorInProduct);
   const {
     quantity,
     name,
     currentPrice,
+    previousPrice,
     imageUrls,
     color,
     brand,
@@ -43,16 +46,11 @@ function ProductDescription() {
     itemNo,
     description,
     guarantee,
+    sale,
   } = useSelector(currentProduct);
-  const all = useSelector(allProductsInBase);
-  const allProducts = [...all];
-  const isIdExist = allProducts.find((item) => item.itemNo === id);
 
   useEffect(() => {
     dispatch(getProduct(id));
-    return () => {
-      dispatch(closeModalBasket());
-    };
   }, [dispatch]);
 
   const [countToBasket, setCountToBasket] = useState(1);
@@ -89,14 +87,16 @@ function ProductDescription() {
     if (imageUrls) {
       setMainImage(imageUrls[0]);
     }
+    return () => {
+      dispatch(closeModalBasket());
+    };
   }, [imageUrls]);
 
   if (isLoading) {
     return <LinearProgress />;
-    // return <CircularProgress />;
   }
 
-  if (!isIdExist) {
+  if (isError) {
     return <PageNotFound />;
   }
 
@@ -112,7 +112,7 @@ function ProductDescription() {
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
+              alignItems: 'start',
             }}>
             <AdvancedImage
               className="main-photo"
@@ -164,11 +164,16 @@ function ProductDescription() {
             </Grid>
             <Guarantee>{itemNo}</Guarantee>
             <Title>
-              {brand} {name} {storage} {color}
+              {brand || null} {name || null} {storage || null} {color}
             </Title>
-            <Description>{description}</Description>
+            <Description>{description || null}</Description>
             <Price>
               {quantity === 0 ? 'Not in stock' : `${currentPrice}$`}
+              {sale ? (
+                <PrevPrice>
+                  <s>{`${previousPrice}$`}</s>
+                </PrevPrice>
+              ) : null}
             </Price>
             <Guarantee>{guarantee} of guarantee </Guarantee>
             <Grid container>

@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Grid, Typography } from '@mui/material';
-import { Box, display } from '@mui/system';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import { Box } from '@mui/system';
 import theme from '../../themes/theme';
 import { addCategory, fetchFilters } from '../../redux/slices/filtersSlice';
 
@@ -12,7 +11,6 @@ function Category() {
 
   const { categories } = useSelector(({ filters }) => filters.availableFilters);
   const isLoadedFilters = useSelector((state) => state.filters.isLoaded);
-  const isLoadingFilters = useSelector((state) => state.filters.isLoading);
 
   useEffect(() => {
     if (!isLoadedFilters) dispatch(fetchFilters());
@@ -31,11 +29,24 @@ function Category() {
               firstCategory.name.localeCompare(secondCategory.name)
             )
             .map(({ name: categoryName, id }) => (
-              <Grid item lg={1} md={2} sm={4} xs={6}>
-                <Link to="./product">
+              <Grid
+                item
+                lg={1}
+                md={2}
+                sm={4}
+                xs={6}
+                sx={{ justifyContent: 'center', display: 'flex' }}>
+                <Link
+                  to="./product"
+                  style={{
+                    display: 'block',
+                    textDecoration: 'none',
+                    color: '#000000',
+                    margin: '0 auto',
+                  }}>
                   <Button
                     sx={{
-                      width: '200px',
+                      width: 'max-content',
                       height: '40px',
                       fontFamily: theme.typography.fontFamily.primary,
                       fontWeight: '700px',

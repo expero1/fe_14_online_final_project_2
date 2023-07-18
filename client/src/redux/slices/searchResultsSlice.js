@@ -3,6 +3,23 @@ import fetchApi from '../../api/fetchApi';
 import { productsEP } from '../../api/constants';
 import { setErrorMessage } from './errorsSlice';
 
+export const fetchArrayProducts = createAsyncThunk(
+  'searchList/fetchArrayProducts',
+  async (_, { dispatch }) => {
+    try {
+      const resultArray = await fetchApi(productsEP);
+      return resultArray;
+    } catch (error) {
+      dispatch(
+        setErrorMessage({
+          error: error.message,
+        })
+      );
+      throw error;
+    }
+  }
+);
+
 const searchListSlice = createSlice({
   name: 'searchList',
   initialState: {
@@ -22,28 +39,27 @@ const searchListSlice = createSlice({
     errorGetArray: (state) => {
       state.isFetching = false;
     },
+    clearResultArray: (state) => {
+      state.resultArray = [];
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchArrayProducts.pending, (state) => {
+        state.isFetching = true;
+      })
+      .addCase(fetchArrayProducts.fulfilled, (state, action) => {
+        state.isFetching = false;
+        state.isFetched = true;
+        state.resultArray = action.payload;
+      })
+      .addCase(fetchArrayProducts.rejected, (state) => {
+        state.isFetching = false;
+      });
   },
 });
 
-export default searchListSlice.reducer;
-export const { startGetArray, finishGetArray, errorGetArray } =
+export const { finishGetArray, errorGetArray, clearResultArray } =
   searchListSlice.actions;
 
-export const fetchArrayProducts = () => async (dispatch) => {
-  dispatch(startGetArray());
-  try {
-    const resultArray = await fetchApi(productsEP);
-    dispatch(finishGetArray(resultArray));
-  } catch (error) {
-    dispatch(
-      errorGetArray({
-        error: error.message,
-      })
-    );
-    dispatch(
-      setErrorMessage({
-        error: error.message,
-      })
-    );
-  }
-};
+export default searchListSlice.reducer;

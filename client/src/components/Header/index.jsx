@@ -28,9 +28,10 @@ import getImg from '../../cloudinary';
 import Footer from '../Footer';
 import BreadCrumbs from '../Breadcrumbs';
 import Search from '../Search';
-import { selectCart } from '../../redux/selectors';
+import { isBurgerOpen, selectCart } from '../../redux/selectors';
 import AllContent from '../../themes/themeMain';
 import { resetFilters } from '../../redux/slices/filtersSlice';
+import { burgerOpen, burgerClose } from '../../redux/slices/headerSlice';
 
 const activeLinkDecoration = ({ isActive }) => ({
   color: '#5E5E5E',
@@ -40,40 +41,38 @@ const activeLinkDecoration = ({ isActive }) => ({
   fontStyle: 'normal',
   textDecoration: isActive ? 'underline' : 'none',
   textUnderlinePosition: isActive ? 'under' : 'none',
-  fontWeight: isActive ? '700' : '400',
+  fontWeight: isActive ? '900' : '400',
   cursor: isActive ? 'default' : 'pointer',
-  width: isActive ? '65px' : '',
-  height: isActive ? '22px' : '',
 });
 
+// eslint-disable-next-line no-unused-vars
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: 3,
+    top: 4,
+    border: `none`,
+    padding: '0',
+    color: '#F5F7FB',
+    backgroundColor: '#FF6565',
+    fontFamily: 'Josefin Sans',
+    fontSize: '10px',
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: 'normal',
+    minWidth: '12.5px',
+    height: '12.1px',
+  },
+}));
+
 function Header() {
+  const [totalInBasket, setTotalInBasket] = useState('0');
   const { itemsBasket } = useSelector(selectCart);
-  const [totalInBasket, setTotalInBasket] = useState(0);
-  const [open, setOpen] = useState(false);
+  const openMenu = useSelector(isBurgerOpen);
   const dispatch = useDispatch();
   const location = useLocation();
   if (location.pathname !== '/product') {
     dispatch(resetFilters());
   }
-
-  // eslint-disable-next-line no-unused-vars
-  const StyledBadge = styled(Badge)(({ theme }) => ({
-    '& .MuiBadge-badge': {
-      right: 3,
-      top: 4,
-      border: `none`,
-      padding: '0',
-      color: '#F5F7FB',
-      backgroundColor: '#FF6565',
-      fontFamily: 'Josefin Sans',
-      fontSize: '10px',
-      fontStyle: 'normal',
-      fontWeight: 400,
-      lineHeight: 'normal',
-      minWidth: '12.5px',
-      height: '12.1px',
-    },
-  }));
 
   const totalBasketItems = () => {
     const total = itemsBasket.reduce((sum, item) => item.count + sum, 0);
@@ -82,6 +81,7 @@ function Header() {
   useEffect(() => {
     totalBasketItems();
   });
+
   return (
     <AllContent>
       <CssBaseline />
@@ -90,6 +90,8 @@ function Header() {
         sx={{
           background: '#F8F8F8',
           boxShadow: 'none',
+          padding: '0',
+          margin: '0',
         }}>
         <Container maxWidth="100%" style={{ padding: '0' }}>
           <Toolbar
@@ -98,15 +100,29 @@ function Header() {
               padding: {
                 xs: '0 0 0 1.25rem',
                 md: '0 0 0 3.44rem',
-                lg: '2.75rem 4.81rem 1.94rem 6.5rem',
+                lg: '2rem',
               },
             }}>
             <NavLink to="/" style={{ textDecoration: 'none' }}>
               <Grid container direction="row">
+                <Stack
+                  sx={{
+                    width: { xs: '1.7rem', md: '2.0rem' },
+                    height: { xs: '1.7rem', md: '2.0rem' },
+                    margin: '4px 2px 0 0',
+                  }}>
+                  <AdvancedImage
+                    cldImg={getImg.image('header/frfdurnw7br9n8gxqfdy.png')}
+                    alt="twitter"
+                    width="100%"
+                  />
+                </Stack>
                 <Typography
                   variant="h5"
                   gutterBottom
                   sx={{
+                    margin: '0',
+                    padding: '0',
                     color: '#616467',
                     fontFamily: 'Lato',
                     fontStyle: 'normal',
@@ -119,17 +135,6 @@ function Header() {
                   }}>
                   Apple Shop
                 </Typography>
-                <Stack
-                  sx={{
-                    width: { xs: '1.7rem', md: '2.0rem' },
-                    height: { xs: '1.7rem', md: '2.0rem' },
-                  }}>
-                  <AdvancedImage
-                    cldImg={getImg.image('header/frfdurnw7br9n8gxqfdy.png')}
-                    alt="twitter"
-                    width="100%"
-                  />
-                </Stack>
               </Grid>
             </NavLink>
             <Hidden lgDown>
@@ -173,9 +178,16 @@ function Header() {
                 className="header_link">
                 About
               </NavLink>
-              <Search />
+              <Container
+                style={{
+                  maxWidth: '300px',
+                  padding: '0',
+                  margin: '0',
+                }}>
+                <Search />
+              </Container>
               <NavLink to="/basket">
-                <IconButton>
+                <IconButton style={{ padding: '0', margin: '0' }}>
                   <StyledBadge
                     badgeContent={totalInBasket === 0 ? '0' : totalInBasket}>
                     <ShoppingCartOutlinedIcon
@@ -191,102 +203,117 @@ function Header() {
               <Button
                 variant="contained"
                 endIcon={<LoginOutlinedIcon />}
-                sx={{ background: '#211F1C', width: '113px', height: '40px' }}>
+                sx={{
+                  background: '#211F1C',
+                  width: '113px',
+                  height: '40px',
+                  padding: '0',
+                  margin: '0',
+                }}>
                 Login
               </Button>
             </Hidden>
             <Hidden lgUp>
               <IconButton
                 style={{ padding: '0' }}
-                onClick={() => setOpen(true)}>
+                onClick={() => dispatch(burgerOpen())}>
                 <MenuIcon
                   sx={{
-                    backgroundColor: '#393D45',
-                    color: '#F4F4F4',
+                    backgroundColor: '#F4F4F4',
+                    color: '#393D45',
                     width: '100%',
                     height: '100%',
-                    maxWidth: { xs: '52px', md: '114px' },
-                    maxHeight: { xs: '52px', md: '109px' },
+                    maxWidth: { xs: '50px', md: '75px' },
+                    maxHeight: { xs: '50px', md: '75px' },
                   }}
                 />
               </IconButton>
             </Hidden>
           </Toolbar>
         </Container>
-        <SwipeableDrawer
-          anchor="top"
-          open={open}
-          onOpen={() => setOpen(true)}
-          onClose={() => setOpen(false)}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ padding: '0.5rem' }}>
-            <div>
-              <IconButton onClick={() => setOpen(false)}>
-                <CloseIcon />
-              </IconButton>
-            </div>
-            <NavLink to="/basket">
-              <IconButton>
-                <StyledBadge
-                  badgeContent={totalInBasket === 0 ? '0' : totalInBasket}>
-                  <ShoppingCartOutlinedIcon
-                    sx={{
-                      color: '#616467',
-                      width: '28.7px',
-                      height: '32px ',
-                    }}
-                  />
-                </StyledBadge>
-              </IconButton>
-            </NavLink>
-            <Button
-              variant="contained"
-              endIcon={<LoginOutlinedIcon />}
-              sx={{ background: '#211F1C', width: '113px', height: '40px' }}>
-              Login
-            </Button>
-          </Grid>
-          <Divider />
-          <List>
-            <ListItem sx={{ justifyContent: 'center' }}>
-              <Search />
-            </ListItem>
-            <ListItem
-              sx={{ justifyContent: 'center' }}
-              onClick={() => setOpen(false)}>
-              <NavLink
-                to="/"
-                style={activeLinkDecoration}
-                className="header_link">
-                Home
+        <Hidden lgUp>
+          <SwipeableDrawer
+            anchor="top"
+            open={openMenu}
+            onOpen={() => dispatch(burgerOpen())}
+            onClose={() => dispatch(burgerClose())}>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ padding: '0.5rem' }}>
+              <div>
+                <IconButton onClick={() => dispatch(burgerClose())}>
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <NavLink to="/basket" onClick={() => dispatch(burgerClose())}>
+                <IconButton style={{ padding: '0', margin: '0' }}>
+                  <StyledBadge
+                    badgeContent={totalInBasket === 0 ? '0' : totalInBasket}>
+                    <ShoppingCartOutlinedIcon
+                      sx={{
+                        color: '#616467',
+                        width: '28.7px',
+                        height: '32px ',
+                      }}
+                    />
+                  </StyledBadge>
+                </IconButton>
               </NavLink>
-            </ListItem>
-            <ListItem
-              sx={{ justifyContent: 'center' }}
-              onClick={() => setOpen(false)}>
-              <NavLink
-                to="/product"
-                style={activeLinkDecoration}
-                className="header_link">
-                Product
-              </NavLink>
-            </ListItem>
-            <ListItem
-              sx={{ justifyContent: 'center' }}
-              onClick={() => setOpen(false)}>
-              <NavLink
-                to="/about"
-                style={activeLinkDecoration}
-                className="header_link">
-                About
-              </NavLink>
-            </ListItem>
-          </List>
-        </SwipeableDrawer>
+              <Button
+                variant="contained"
+                endIcon={<LoginOutlinedIcon />}
+                sx={{
+                  background: '#211F1C',
+                  width: '113px',
+                  height: '40px',
+                  margin: '0',
+                  padding: '0',
+                }}
+                onClick={() => dispatch(burgerClose())}>
+                Login
+              </Button>
+            </Grid>
+            <Divider />
+            <List style={{ height: '100vh' }}>
+              <ListItem
+                sx={{ justifyContent: 'center' }}
+                onClick={() => dispatch(burgerClose())}>
+                <NavLink
+                  to="/"
+                  style={activeLinkDecoration}
+                  className="header_link">
+                  Home
+                </NavLink>
+              </ListItem>
+              <ListItem
+                sx={{ justifyContent: 'center' }}
+                onClick={() => dispatch(burgerClose())}>
+                <NavLink
+                  to="/product"
+                  style={activeLinkDecoration}
+                  className="header_link">
+                  Product
+                </NavLink>
+              </ListItem>
+              <ListItem
+                sx={{ justifyContent: 'center' }}
+                onClick={() => dispatch(burgerClose())}>
+                <NavLink
+                  to="/about"
+                  style={activeLinkDecoration}
+                  className="header_link">
+                  About
+                </NavLink>
+              </ListItem>
+              <ListItem sx={{ justifyContent: 'center' }}>
+                <Search />
+              </ListItem>
+            </List>
+          </SwipeableDrawer>
+        </Hidden>
       </AppBar>
       <BreadCrumbs />
       <Outlet />

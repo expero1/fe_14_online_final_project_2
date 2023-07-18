@@ -27,7 +27,7 @@ import {
   setMinPrice,
 } from '../../redux/slices/filtersSlice';
 import theme from '../../themes/theme';
-import { FilterStyles } from '../../themes/themeFilter';
+import FilterStyles from '../../themes/themeFilter';
 
 function Filter() {
   const [filterOpen, setFilterOpen] = useState(false);
@@ -74,7 +74,7 @@ function FilterSection() {
   const [cachedMaxValue, setCachedMaxValue] = useState(maxPrice);
   const [priceMinBoundary, setPriceMinBoundary] = useState();
   const [priceMaxBoundary, setPriceMaxBoundary] = useState();
-
+  let keyOnePressed = false;
   const { categories, price } = useSelector(
     ({ filters }) => filters.availableFilters
   );
@@ -102,17 +102,25 @@ function FilterSection() {
   };
   const minPriceCallback = ({ target }) => {
     const { value } = target;
-    if (isNumber(value) && value < 0) setCachedMinValue(0);
-    else if (value === '') setCachedMinValue(null);
-    else if (!isNumber(cachedMinValue) && (value === '1' || value === '-1'))
+    // if (isNumber(value) && value < 0) setCachedMinValue(0);
+    if (value === '') setCachedMinValue(null);
+    else if (
+      !keyOnePressed &&
+      !isNumber(cachedMinValue) &&
+      (value === '1' || value === '-1')
+    )
       setCachedMinValue(priceMinBoundary);
     else if (isNumber(value)) setCachedMinValue(value);
   };
   const maxPriceCallback = ({ target }) => {
     const { value } = target;
-    if (value < 0) setCachedMaxValue(0);
-    else if (value === '') setCachedMaxValue(null);
-    else if (!isNumber(cachedMaxValue) && (value === '1' || value === '-1'))
+    // if (value < 0) setCachedMaxValue(0);
+    if (value === '') setCachedMaxValue(null);
+    else if (
+      !keyOnePressed &&
+      !isNumber(cachedMaxValue) &&
+      (value === '1' || value === '-1')
+    )
       setCachedMaxValue(priceMaxBoundary);
     else if (isNumber(value)) setCachedMaxValue(value);
   };
@@ -182,6 +190,10 @@ function FilterSection() {
                     min={priceMinBoundary}
                     onChange={minPriceCallback}
                     onKeyUp={({ key }) => key === 'Enter' && setPriceCallback()}
+                    onKeyDown={({ key }) => {
+                      if (key === '1' && cachedMinValue === null)
+                        keyOnePressed = true;
+                    }}
                     sx={{ width: '95%' }}
                   />
                 </Grid>
@@ -193,6 +205,10 @@ function FilterSection() {
                     type="number"
                     onChange={maxPriceCallback}
                     onKeyUp={({ key }) => key === 'Enter' && setPriceCallback()}
+                    onKeyDown={({ key }) => {
+                      if (key === '1' && cachedMaxValue === null)
+                        keyOnePressed = true;
+                    }}
                     sx={{
                       width: '95%',
                       padding: '0',
@@ -200,20 +216,9 @@ function FilterSection() {
                   />
                 </Grid>
               </Grid>
-              <Button
-                sx={{
-                  minWidth: '100%',
-                  borderRadius: '8px',
-                  marginTop: '20px',
-                  textTransform: 'capitalize',
-                  background: '#000',
-                }}
-                variant="contained"
-                onClick={setPriceCallback}>
-                Set Price
-              </Button>
+
               <Grid container sx={{ marginTop: '35px' }}>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <Button
                     sx={{
                       width: '98%',
@@ -226,17 +231,18 @@ function FilterSection() {
                     Clear Filter
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <Button
                     sx={{
-                      width: '98%',
+                      minWidth: '100%',
                       borderRadius: '8px',
+                      marginTop: '20px',
                       textTransform: 'capitalize',
                       background: '#000',
                     }}
                     variant="contained"
-                    onClick={resetFiltersCallback}>
-                    Apply
+                    onClick={setPriceCallback}>
+                    Set Price
                   </Button>
                 </Grid>
               </Grid>

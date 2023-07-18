@@ -1,8 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchArrayProducts } from '../../redux/slices/searchResultsSlice';
+import {
+  fetchArrayProducts,
+  clearResultArray,
+} from '../../redux/slices/searchResultsSlice';
 import {
   setSelect,
   setValue,
@@ -32,6 +35,7 @@ export default function Search() {
 
   const renderIcon = () => {
     if (statusIconType === 'search') {
+      dispatch(clearResultArray());
       return <SearchIcon />;
     }
     if (statusIconType === 'close') {
@@ -40,11 +44,26 @@ export default function Search() {
     return null;
   };
 
+  const [typingTimeout, setTypingTimeout] = useState(null);
+
+  const handleInputChange = () => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    setTypingTimeout(
+      setTimeout(() => {
+        dispatch(fetchArrayProducts());
+      }, 1000)
+    );
+  };
+
   const valueChange = (event) => {
     const inputValue = event.target.value;
     dispatch(setValue(inputValue));
     if (inputValue.length >= 3) {
       dispatch(setSelect(true));
+      handleInputChange();
     } else {
       dispatch(setSelect(false));
     }
