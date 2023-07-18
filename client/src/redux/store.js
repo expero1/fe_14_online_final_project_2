@@ -27,6 +27,7 @@ import orderSlice from './slices/orderSlice';
 import headerSlice from './slices/headerSlice';
 import loginSlice from './slices/loginSlice';
 import userSlice from './slices/userSlice';
+import tokenSlice from './slices/token';
 
 const rootReducer = combineReducers({
   products: productsSlice,
@@ -44,16 +45,17 @@ const rootReducer = combineReducers({
   burgerMenu: headerSlice,
   login: loginSlice,
   user: userSlice,
+  token: tokenSlice,
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['basket'],
+  whitelist: ['basket', 'token'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
