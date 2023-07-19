@@ -133,17 +133,45 @@ function FilterSection() {
     setCachedMinValue(null);
     setCachedMaxValue(null);
   };
-
+  const setCorrectMinValue = () => {
+    if (+cachedMinValue < priceMinBoundary && cachedMinValue !== null) {
+      setCachedMinValue(priceMinBoundary);
+    }
+    if (+cachedMinValue > priceMaxBoundary) {
+      setCachedMinValue(priceMaxBoundary);
+    }
+    if (+cachedMinValue > +cachedMaxValue && cachedMaxValue !== null) {
+      setCachedMinValue(+cachedMaxValue);
+    }
+  };
+  const setCorrectMaxValue = () => {
+    if (+cachedMaxValue > priceMaxBoundary) {
+      setCachedMaxValue(priceMaxBoundary);
+    }
+    if (+cachedMaxValue < priceMinBoundary && cachedMaxValue !== null) {
+      setCachedMaxValue(priceMinBoundary);
+    }
+    if (+cachedMinValue > +cachedMaxValue) {
+      setCachedMaxValue(+cachedMinValue);
+    }
+  };
   if (isLoadingFilters) return <CircularProgress />;
   if (isLoadedFilters)
     return (
       <FilterStyles>
         <Typography
-          sx={{ fontSize: '20px', fontWeight: '700', fontFamily: 'Roboto' }}>
+          sx={{
+            fontSize: '20px',
+            fontWeight: theme.typography.const.fontWeight.bold,
+            //   fontFamily: 'Roboto'
+          }}>
           Filter
         </Typography>
         <Stack
-          sx={{ width: '300px', fontFamily: 'Roboto' }}
+          sx={{
+            width: '300px',
+            //   fontFamily: 'Roboto'
+          }}
           padding={3}
           spacing={{ xs: 1, sm: 2 }}>
           <FormGroup label="Product Category" sx={{ maxWidth: 300 }}>
@@ -186,8 +214,11 @@ function FilterSection() {
                     size="small"
                     value={isNumber(cachedMinValue) ? cachedMinValue : ''}
                     placeholder={`${priceMinBoundary} $`}
-                    type="number"
+                    type="tel"
                     min={priceMinBoundary}
+                    onBlur={() => {
+                      setCorrectMinValue();
+                    }}
                     onChange={minPriceCallback}
                     onKeyUp={({ key }) => key === 'Enter' && setPriceCallback()}
                     onKeyDown={({ key }) => {
@@ -202,7 +233,10 @@ function FilterSection() {
                     size="small"
                     value={isNumber(cachedMaxValue) ? cachedMaxValue : ''}
                     placeholder={`${priceMaxBoundary} $`}
-                    type="number"
+                    type="tel"
+                    onBlur={() => {
+                      setCorrectMaxValue();
+                    }}
                     onChange={maxPriceCallback}
                     onKeyUp={({ key }) => key === 'Enter' && setPriceCallback()}
                     onKeyDown={({ key }) => {

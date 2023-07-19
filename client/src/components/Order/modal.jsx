@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Container } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { closeModal } from '../../redux/slices/modalSlice';
-import { closeForm } from '../../redux/slices/formSlice';
 import { sendOrder } from '../../redux/slices/orderSlice';
+import { clearBasket } from '../../redux/slices/basketSlice';
 import {
   StyledTypography,
   StyledButton,
@@ -21,9 +21,9 @@ export default function ModalOrdered() {
   const modalRef = useRef(null);
 
   const closed = () => {
-    dispatch(closeForm());
     dispatch(closeModal());
     dispatch(sendOrder());
+    dispatch(clearBasket());
   };
 
   const handleClickOutside = (event) => {
@@ -63,6 +63,7 @@ export default function ModalOrdered() {
           variant="contained"
           color="primary"
           disableElevation
+          style={{ width: '80' }}
           onClick={closed}>
           Ok
         </StyledButton>

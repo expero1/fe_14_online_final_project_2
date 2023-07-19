@@ -9,7 +9,7 @@ import { SquareButton } from '../../components/Buttons';
 import ArrowIcon from '../../components/Icons/arrowIcon/index';
 import Category from '../../components/Category';
 import ModalBasket from '../../components/ModalForBasket';
-import Carousel from '../../components/Carousel';
+import Slider from '../../components/Slider';
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily.primary,
@@ -35,9 +35,6 @@ const AllProductsBtn = styled(SquareButton)(() => ({
   maxHeight: '54px',
 }));
 function HomeContent() {
-  // const id = useSelector() id товара
-  /* const id = 123; */
-
   return (
     <Container maxWidth="xxl" sx={{ padding: '0 3%' }}>
       <Category />
@@ -48,11 +45,11 @@ function HomeContent() {
           justifyContent: 'center',
           flexDirection: 'column',
           backgroundColor: '#FCF9F6',
+          borderRadius: '20px',
+          marginBottom: '20px',
         }}>
-        <SectionTitle variant="h2">Daily Sale</SectionTitle>
-        <Box sx={{ width: '93%' }}>
-          <Carousel />
-        </Box>
+        <SectionTitle variant="h2">Best Offer</SectionTitle>
+        <Slider />
         <SectionTitle variant="h2">Products</SectionTitle>
         <Box>
           <ProductsList perPage={8} />

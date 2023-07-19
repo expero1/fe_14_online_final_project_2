@@ -17,16 +17,25 @@ const StyledForm = styled(FormControl)({
 
 const StyledButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {
-    display: 'block',
-    fontFamily: `${theme.typography.fontFamily.primary}`,
-    fontSize: '1.2rem',
-    fontWeight: 400,
-    lineHeight: '1.5rem',
-    width: 130,
-    height: 50,
+    backgroundColor: { xs: '#F5F7FB', md: '#211F1C' },
+    color: { xs: '#616467', md: '#fff' },
+    borderRadius: '7px',
+    border: '1px solid #211F1C',
     margin: '10px auto',
-    padding: '13px 18px',
-    backgroundColor: `${theme.palette.primary.dark}`,
+    display: 'block',
+    width: {
+      xs: '5rem',
+      sm: '7rem',
+      md: '9rem',
+    },
+    height: {
+      xs: '2rem',
+      sm: '2.5rem',
+      md: '3rem',
+    },
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+    },
   },
   '&.MuiButton-contained': {
     borderRadius: 50,
@@ -61,13 +70,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const StyledGrid = styled(Grid)({
+const StyledGrid = styled(Grid)(({ theme }) => ({
   margin: 0,
   maxWidth: 250,
   paddingLeft: 10,
   borderRadius: 20,
   minWidth: 50,
-});
+  [theme.breakpoints.down(330)]: {
+    paddingLeft: 0,
+  },
+}));
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
@@ -118,7 +130,7 @@ const StyledModalContainer = styled(Container)(({ theme }) => ({
 const StyledFormBackground = styled(Container)({
   backgroundColor: 'rgba(128, 128, 128, 0.5)',
   position: 'fixed',
-  zIndex: 999,
+  zIndex: 1500,
   right: 0,
   bottom: 0,
   top: 0,
