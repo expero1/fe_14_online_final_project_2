@@ -18,7 +18,7 @@ const fetchApi = async (url, options) => {
     }
 
     throw new AppError(notFoundErrorMessage, {
-      context: await response.json(),
+      context: { ...(await response.json()), status: response.status },
     });
   } catch (error) {
     if (!(error instanceof AppError)) {
