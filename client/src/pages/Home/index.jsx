@@ -35,11 +35,8 @@ const AllProductsBtn = styled(SquareButton)(() => ({
   maxHeight: '54px',
 }));
 function HomeContent() {
-  // const id = useSelector() id товара
-  /* const id = 123; */
-
   return (
-    <Container maxWidth="xxl" sx={{ padding: '0 3%' }}>
+    <Container sx={{ padding: '0 3%', maxWidth: 'xl' }}>
       <Category />
       <ModalBasket />
       <Container
