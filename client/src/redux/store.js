@@ -29,6 +29,7 @@ import loginSlice from './slices/loginSlice';
 import userSlice from './slices/userSlice';
 import tokenSlice from './slices/tokenSlice';
 import ordersSlice from './slices/ordersSlice';
+import allProdsHomeSlice from './slices/allProdsHomeSlice';
 
 const rootReducer = combineReducers({
   products: productsSlice,
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   token: tokenSlice,
   orders: ordersSlice,
   devTools: process.env.NODE_ENV !== 'production',
+  allProdsHomePage: allProdsHomeSlice,
 });
 
 const persistConfig = {
