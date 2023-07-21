@@ -1,0 +1,77 @@
+import * as React from 'react';
+import { render, screen, act, wait, waitFor } from '@testing-library/react';
+import { toBeInTheDocument } from '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
+import { ThemeProvider } from '@mui/material';
+import { setupServer } from 'msw/node';
+import { rest } from 'msw';
+import { Provider } from 'react-redux';
+import Filter from '.';
+import theme from '../../themes/theme';
+import store from '../../redux/store';
+import { productFiltersEP } from '../../api/constants';
+const mockFilters = {
+  categories: [
+    { id: 'headphones', name: 'Headphones', quantity: 5 },
+    { id: 'tablet', name: 'Tablets', quantity: 7 },
+    { id: 'accessories', name: 'Accessories', quantity: 8 },
+    { id: 'cellphone', name: 'Smartphones', quantity: 10 },
+    { id: 'watch', name: 'Watches', quantity: 5 },
+    { id: 'laptop', name: 'Notebooks', quantity: 7 },
+  ],
+  price: { min: 7, max: 2285 },
+};
+const server = setupServer(
+  rest.get(productFiltersEP, (req, res, ctx) =>
+    res(ctx.json(mockFilters), ctx.delay(150))
+  )
+);
+const Component = function () {
+  return (
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <Filter />
+      </Provider>
+    </ThemeProvider>
+  );
+};
+// const spy = () =>
+//   jest.spyOn(global, 'fetch').mockImplementation(() => {
+//     console.log('HOHOHO');
+//     return new Promise((resolve, reject) => {
+//       console.log('resolve');
+//       resolve({
+//         ok: true,
+//         status: 200,
+//         json: () =>
+//           new Promise((resolve) => {
+//             resolve(mockFilters);
+//           }),
+//       });
+//     });
+//   });
+beforeAll(() => {
+  server.listen();
+});
+afterAll(() => {
+  server.close();
+});
+beforeEach(() => {
+  //   spy();
+});
+afterEach(() => {
+  //   jest.restoreAllMocks();
+  server.resetHandlers();
+});
+describe('Filter section', () => {
+  it('Component render', async () => {
+    act(() => {
+      render(<Component />);
+    });
+    expect(screen.getByRole('region')).toBeInTheDocument();
+    //   console.log('spy', spy.mock);
+
+    //   screen.debug();
+    expect(await screen.findByRole('form')).toBeInTheDocument();
+  });
+});

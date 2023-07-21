@@ -1,10 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-<<<<<<< HEAD
-import { Provider, useDispatch } from 'react-redux';
-=======
 import { Provider } from 'react-redux';
->>>>>>> main
 import { ThemeProvider } from '@mui/material/styles';
 import { PersistGate } from 'redux-persist/integration/react';
 import Basket from './pages/Basket';

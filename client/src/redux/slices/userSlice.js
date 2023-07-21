@@ -1,25 +1,26 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import getUser from '../../api/getUser';
+import getUserInformation from '../../api/getUserInformation';
 import { setErrorMessage } from './errorsSlice';
+import extraReducerCreator, {
+  initialStateCreator,
+} from './extraReducerCreator';
 
+const stateName = 'user';
 export const fetchUserInfo = createAsyncThunk(
   'user-info/fetch',
-  async (_, { dispatch, getState }) => {
-    const { token } = getState().token;
-    // return getUser({ token });
+  async (_, { dispatch }) => {
     try {
-      return await getUser({ token });
+      return await getUserInformation();
     } catch (error) {
       dispatch(setErrorMessage(error.message));
       throw error;
     }
   }
 );
-const initialState = { isFetching: true, isFetched: true, user: null };
 
 const userSlice = createSlice({
-  name: 'user',
-  initialState,
+  name: stateName,
+  initialState: initialStateCreator(stateName),
   reducers: {
     resetUserInfo: (state) => {
       state.isFetching = false;
@@ -28,18 +29,7 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserInfo.pending, (state) => {
-      state.isFetching = true;
-    });
-    builder.addCase(fetchUserInfo.fulfilled, (state, { payload }) => {
-      state.user = payload;
-      state.isFetching = false;
-      state.isFetched = true;
-    });
-    builder.addCase(fetchUserInfo.rejected, (state) => {
-      state.isFetching = false;
-      state.isFetched = false;
-    });
+    extraReducerCreator(builder)(fetchUserInfo, stateName);
   },
 });
 export const { resetUserInfo } = userSlice.actions;

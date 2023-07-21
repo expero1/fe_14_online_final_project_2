@@ -1,24 +1,36 @@
 import {
   AppError,
   connectionErrorMessage,
-  notFoundErrorMessage,
+  notAuthorizedErrorMessage,
+  requestErrorMessage,
 } from '../errors/errors';
 
+let userToken = null;
+export const setToken = (token) => {
+  userToken = token;
+};
 const fetchApi = async (url, options) => {
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: userToken,
       },
       ...options,
+    }).catch((error) => {
+      throw error;
     });
     if (response.ok && response.status === 200) {
       return await response.json();
     }
-
-    throw new AppError(notFoundErrorMessage, {
-      context: { ...(await response.json()), status: response.status },
+    const result = await response.json();
+    if (result === 'Unauthorized')
+      throw new AppError(notAuthorizedErrorMessage, {
+        context: { url, options, status: 401 },
+      });
+    throw new AppError(requestErrorMessage, {
+      context: { ...result, url, options, status: response.status },
     });
   } catch (error) {
     if (!(error instanceof AppError)) {
@@ -27,3 +39,49 @@ const fetchApi = async (url, options) => {
   }
 };
 export default fetchApi;
+
+// import {
+//   AppError,
+//   connectionErrorMessage,
+//   notAuthorizedErrorMessage,
+//   notFoundErrorMessage,
+// } from '../errors/errors';
+
+// let userToken = null;
+// export const setToken = (token) => {
+//   userToken = token;
+// };
+// const fetchApi = async (url, options) => {
+//   try {
+//     return fetch(url, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: userToken,
+//       },
+//       ...options,
+//     })
+//       .catch((error) => {
+//         throw error;
+//       })
+//       .then(async (response) => {
+//         if (response.ok && response.status === 200) {
+//           return response.json();
+//         }
+//         const result = await response.json();
+//         if (result === 'Unauthorized')
+//           throw new AppError(notAuthorizedErrorMessage, {
+//             context: { url, options, status: 401 },
+//           });
+//         // console.log(response);
+//         throw new AppError(notFoundErrorMessage, {
+//           context: { ...result, url, options, status: response.status },
+//         });
+//       });
+//   } catch (error) {
+//     if (!(error instanceof AppError)) {
+//       throw new AppError(connectionErrorMessage, { rawError: error });
+//     } else throw error;
+//   }
+// };
+// export default fetchApi;

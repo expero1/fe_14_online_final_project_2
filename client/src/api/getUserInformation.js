@@ -5,9 +5,9 @@ import fetchApi from './fetchApi';
 // import useToken from './useToken';
 // import store from '../redux/store';
 
-const getUser = ({ token }) => {
+const getUserInformation = () => {
   try {
-    return fetchApi(userInfoEP, { headers: { Authorization: token } });
+    return fetchApi(userInfoEP);
   } catch (error) {
     if (error instanceof AppError) {
       if (error.context.status === 401)
@@ -16,4 +16,4 @@ const getUser = ({ token }) => {
     throw error;
   }
 };
-export default getUser;
+export default getUserInformation;

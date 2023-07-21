@@ -1,54 +1,33 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import getLogin from '../../api/getLogin';
+import getToken from '../../api/getToken';
 import { setErrorMessage } from './errorsSlice';
-import { resetToken, saveToken } from './tokenSlice';
+import extraReducerCreator, {
+  initialStateCreator,
+} from './extraReducerCreator';
 
-const initialState = {
-  isFetching: false,
-  isFetched: false,
-  token: null,
-};
+const stateName = 'login';
 export const login = createAsyncThunk(
-  'login/fetch',
+  `${stateName}/fetch`,
   async ({ loginOrEmail, password }, { dispatch }) => {
     try {
-      const { token } = await getLogin(loginOrEmail, password);
-      dispatch(saveToken(token));
-      return token;
+      const { token } = await getToken(loginOrEmail, password);
+      return { token };
     } catch (error) {
-      setErrorMessage(error.message);
+      console.log(error);
+      dispatch(setErrorMessage(error.message));
+
       throw error;
     }
   }
 );
-export const logout = createAsyncThunk('logout', (_, { dispatch }) => {
-  dispatch(resetToken());
-});
 
 const loginSlice = createSlice({
-  name: 'login',
-  initialState,
-  //   reducers: {
-  //     logout: (state) => {
-  //       state.token = null;
-  //       state.isLoading = false;
-  //       state.isLoaded = false;
-  //     },
-  //   },
+  name: stateName,
+  initialState: initialStateCreator(stateName),
+  reducers: { logout: () => {} },
   extraReducers: (builder) => {
-    builder.addCase(login.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(login.fulfilled, (state, { payload }) => {
-      state.isLoading = false;
-      state.isLoaded = true;
-      //   state.token = payload;
-    });
-    builder.addCase(login.rejected, (state) => {
-      state.isLoading = false;
-      state.isLoaded = false;
-    });
+    extraReducerCreator(builder)(login, stateName);
   },
 });
-// export const { logout } = loginSlice.actions;
+export const { logout } = loginSlice.actions;
 export default loginSlice.reducer;

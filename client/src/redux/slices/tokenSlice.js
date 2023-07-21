@@ -1,17 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { setToken } from '../../api/fetchApi';
+import { login, logout } from './loginSlice';
 
 const initialState = { token: null };
 const tokenSlice = createSlice({
   name: 'token',
   initialState,
-  reducers: {
-    saveToken: (state, { payload: token }) => {
-      state.token = token;
-    },
-    resetToken: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(logout, (state) => {
       state.token = null;
-    },
+      setToken(null);
+    });
+    builder.addCase(login.fulfilled, (state, { payload }) => {
+      const { token } = payload;
+      state.token = token;
+      setToken(token);
+    });
   },
 });
-export const { saveToken, resetToken } = tokenSlice.actions;
+// export const { saveToken, resetToken } = tokenSlice.actions;
 export default tokenSlice.reducer;
