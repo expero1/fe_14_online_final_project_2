@@ -23,8 +23,10 @@ function Login() {
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const auth = useSelector((state) => state.user.user);
-  const fromPage = location.state?.from?.pathname;
-
+  const fromPage =
+    location.state && location.state.from && location.state.from.pathname;
+  const loginError = useSelector((state) => state.login.error);
+  const isLoading = useSelector((state) => state.login.isLoading);
   useEffect(() => {
     if (auth && fromPage === '/user') {
       navigate('/');
@@ -58,6 +60,7 @@ function Login() {
         cldImg={getImg.image('login/gktl6heq6nphhxarlga5.png')}
         alt="loginImage"
       />
+
       <form
         onSubmit={formik.handleSubmit}
         style={{
@@ -83,6 +86,8 @@ function Login() {
         </Container>
         <Container>
           <StyledForm>
+            {loginError && <div style={{ color: 'red' }}>{loginError}</div>}
+            {isLoading && <div style={{ color: 'red' }}>...LOADING...</div>}
             <StyledInputBaseLogin
               type="text"
               variant="outlined"
