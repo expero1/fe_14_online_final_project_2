@@ -48,16 +48,17 @@ const clearSearchInput = (searchInput) =>
   act(() => {
     userEvent.clear(searchInput);
   });
+
+beforeAll(() => server.listen());
+beforeEach(() => {
+  render(<MockSearch />);
+});
+afterEach(() => {
+  server.resetHandlers();
+  cleanup();
+});
+afterAll(() => server.close());
 describe('Search component', () => {
-  beforeAll(() => server.listen());
-  beforeEach(() => {
-    render(<MockSearch />);
-  });
-  afterEach(() => {
-    server.resetHandlers();
-    cleanup();
-  });
-  afterAll(() => server.close());
   test('Component renders', async () => {
     expect(screen.getAllByRole('button').length).toEqual(1);
     const searchButton = screen.getByRole('button');
@@ -70,24 +71,27 @@ describe('Search component', () => {
     expect(searchInput).toBeInTheDocument();
     toggleSearchInput();
     expect(searchInput).not.toBeInTheDocument();
+    toggleSearchInput();
   });
   test('Search result card renders', async () => {
-    toggleSearchInput();
     const searchInput = await screen.findByRole('textbox');
     typeToInput(searchInput, 'name 2');
     await checkQuantityByRole('link', 1);
     await checkQuantityByRole('img', 1);
+    toggleSearchInput();
   });
   test('Check search results by product name', async () => {
     toggleSearchInput();
-    screen.debug();
+    // screen.debug();
     const searchInput = await screen.findByRole('textbox');
+    clearSearchInput(searchInput);
     typeToInput(searchInput, 'name');
     await checkQuantityByRole('link', 3);
     clearSearchInput(searchInput);
     expect(screen.queryAllByRole('link').length).toEqual(0);
     typeToInput(searchInput, 'name 1');
     await checkQuantityByRole('link', 1);
+    toggleSearchInput();
   });
   test('Search by brand', async () => {
     toggleSearchInput();
