@@ -96,6 +96,7 @@ describe('Search component', () => {
   test('Search by brand', async () => {
     toggleSearchInput();
     const searchInput = await screen.findByRole('textbox');
+    clearSearchInput(searchInput);
     typeToInput(searchInput, 'brand');
     await checkQuantityByRole('link', 3);
     clearSearchInput(searchInput);
