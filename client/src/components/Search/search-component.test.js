@@ -30,15 +30,6 @@ function MockSearch() {
 const server = setupServer(
   rest.get('/api/products', (req, res, ctx) => res(ctx.json(mockProducts)))
 );
-beforeAll(() => server.listen());
-beforeEach(() => {
-  render(<MockSearch />);
-});
-afterEach(() => {
-  server.resetHandlers();
-});
-afterAll(() => server.close());
-
 const toggleSearchInput = () => {
   const searchButton = screen.getByRole('button');
   act(() => {
@@ -58,6 +49,14 @@ const clearSearchInput = (searchInput) =>
     userEvent.clear(searchInput);
   });
 describe('Search component', () => {
+  beforeAll(() => server.listen());
+  beforeEach(() => {
+    render(<MockSearch />);
+  });
+  afterEach(() => {
+    server.resetHandlers();
+  });
+  afterAll(() => server.close());
   test('Component renders', async () => {
     expect(screen.getAllByRole('button').length).toEqual(1);
     const searchButton = screen.getByRole('button');
