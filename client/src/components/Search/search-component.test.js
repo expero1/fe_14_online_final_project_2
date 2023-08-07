@@ -55,6 +55,7 @@ describe('Search component', () => {
   });
   afterEach(() => {
     server.resetHandlers();
+    cleanup();
   });
   afterAll(() => server.close());
   test('Component renders', async () => {
@@ -79,6 +80,7 @@ describe('Search component', () => {
   });
   test('Check search results by product name', async () => {
     toggleSearchInput();
+    screen.debug();
     const searchInput = await screen.findByRole('textbox');
     typeToInput(searchInput, 'name');
     await checkQuantityByRole('link', 3);
