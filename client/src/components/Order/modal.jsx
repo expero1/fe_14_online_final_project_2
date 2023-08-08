@@ -12,18 +12,19 @@ import {
   StyledModal,
   StyledModalContainer,
 } from '../../themes/themeOrder';
+import { fetchOrders } from '../../redux/slices/ordersSlice';
 
 export default function ModalOrdered() {
   const dispatch = useDispatch();
   const modal = useSelector((state) => state.modal.statusModal);
   const textModal = useSelector((state) => state.modal.text);
-  const textHeader = useSelector((state) => state.modal.statusOrder);
   const modalRef = useRef(null);
   const isLoading = useSelector((state) => state.order.isLoading);
 
   const closed = () => {
     dispatch(closeModal());
     dispatch(clearBasket());
+    dispatch(fetchOrders());
   };
 
   const handleClickOutside = (event) => {
@@ -64,7 +65,7 @@ export default function ModalOrdered() {
             alignItems: 'center',
           }}>
           <StyledTypography component="h5" variant="h5">
-            {textHeader}
+            Ordered
           </StyledTypography>
           <StyledIconButton onClick={closed}>
             <Close />
@@ -76,6 +77,7 @@ export default function ModalOrdered() {
         <StyledButton
           variant="contained"
           color="primary"
+          role="button"
           disableElevation
           style={{ width: '80' }}
           onClick={closed}>

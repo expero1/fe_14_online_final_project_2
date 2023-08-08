@@ -24,12 +24,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { styled } from '@mui/material/styles';
 import getImg from '../../cloudinary';
 import Footer from '../Footer';
 import BreadCrumbs from '../Breadcrumbs';
 import Search from '../Search';
-import { selectCart } from '../../redux/selectors';
+import { selectCart, selectWishlist } from '../../redux/selectors';
 import AllContent from '../../themes/themeMain';
 import { resetFilters } from '../../redux/slices/filtersSlice';
 import { burgerOpen, burgerClose } from '../../redux/slices/headerSlice';
@@ -68,6 +70,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 function Header() {
   const [totalInBasket, setTotalInBasket] = useState('0');
   const { itemsBasket } = useSelector(selectCart);
+  const [totalInWishlist, setTotalInWishlist] = useState('0');
+  const { itemsWishlist } = useSelector(selectWishlist);
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -89,6 +93,11 @@ function Header() {
   const totalBasketItems = () => {
     const total = itemsBasket.reduce((sum, item) => item.cartQuantity + sum, 0);
     setTotalInBasket(total);
+  };
+
+  const totalWishlistItems = () => {
+    const total = itemsWishlist.length;
+    setTotalInWishlist(total);
   };
 
   const burgerState = useSelector((state) => state.burgerMenu.openBurger);
@@ -141,9 +150,10 @@ function Header() {
 
   useEffect(() => {
     totalBasketItems();
+    totalWishlistItems();
     locationDispatch();
     getToken();
-  }, [itemsBasket, location, token]);
+  }, [itemsBasket, itemsWishlist, location, token]);
 
   return (
     <AllContent>
@@ -197,7 +207,7 @@ function Header() {
                         md: '30px',
                       },
                     }}>
-                    Apple Shop
+                    Apple Store
                   </Typography>
                 </Hidden>
               </Grid>
@@ -252,6 +262,31 @@ function Header() {
               }}>
               <Search />
             </Container>
+            <NavLink to="/wishlist">
+              <IconButton
+                sx={{ padding: '0', margin: { xs: '0 5px', sm: '0' } }}>
+                <StyledBadge
+                  badgeContent={totalInWishlist > 0 ? totalInWishlist : '0'}>
+                  {totalInWishlist > 0 ? (
+                    <FavoriteIcon
+                      sx={{
+                        color: '#616467',
+                        width: '28.7px',
+                        height: '32px ',
+                      }}
+                    />
+                  ) : (
+                    <FavoriteBorderIcon
+                      sx={{
+                        color: '#616467',
+                        width: '28.7px',
+                        height: '32px ',
+                      }}
+                    />
+                  )}
+                </StyledBadge>
+              </IconButton>
+            </NavLink>
             <NavLink to="/basket">
               <IconButton
                 sx={{ padding: '0', margin: { xs: '0 5px', sm: '0' } }}>
