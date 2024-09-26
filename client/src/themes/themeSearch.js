@@ -1,4 +1,4 @@
-import { Input, Container, Icon, List } from '@mui/material';
+import { Input, Container, Icon, List, IconButton } from '@mui/material';
 import { styled, keyframes } from '@mui/system';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ const StyledSearchWrapper = styled(Container)({
   padding: '0!important',
 });
 
-const StyledButtonIcon = styled(Icon)(({ theme }) => ({
+const StyledButtonIcon = styled(IconButton)(({ theme }) => ({
   cursor: 'pointer',
   color: `${theme.palette.primary.main}`,
 }));
