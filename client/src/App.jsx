@@ -18,12 +18,14 @@ import About from './components/AboutUs';
 import UserPage from './pages/UserPage';
 import Init from './components/Init';
 import RequireAuth from './private/RequireAuth';
+import ErrorPopup from './components/ErrorPopup';
 import WishListPage from './pages/WishListPage';
 
 function App() {
   return (
     <Provider store={store}>
       <Init />
+      <ErrorPopup />
       <PersistGate loading="LDNG" persistor={persistor}>
         <ThemeProvider theme={theme}>
           <BrowserRouter>
